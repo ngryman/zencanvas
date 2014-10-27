@@ -1,0 +1,122 @@
+* {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	height: 100%;
+}
+
+html {
+	background: #222;
+}
+
+body {
+	margin: 0;
+}
+
+#editor,
+#preview {
+	position: fixed;
+}
+
+#editor {
+	top: 10%;
+	left: 50%;
+	bottom: 10%;
+	opacity: .2;
+	border: 1px solid #333;
+	padding: 10px;
+	width: 80%;
+	font-size: 14px;
+	transform: translateX(-50%);
+	transition: opacity 100ms,
+		background 100ms,
+		outline 200ms;
+}
+
+#editor:hover {
+	opacity: 1;
+	background: rgba(34, 34, 34, .8);
+}
+
+#editor.has-error {
+	outline: 3px solid #ff5035;
+}
+
+.dock {
+	display: flex;
+}
+
+.dock-top,
+.dock-bottom {
+	flex-direction: column;
+}
+
+.dock #editor,
+.dock #preview {
+	position: static;
+	flex: 1;
+}
+
+.dock #editor {
+	border: 0;
+	background: #111;
+	opacity: 1;
+	transform: none;
+}
+
+.dock #editor:hover {
+	background: #111;
+}
+
+.dock-left #editor,
+.dock-right #editor {
+	border-right: 1px solid #333;
+	max-width: 675px;
+	height: 100%;
+}
+
+.dock-left #preview {
+	order: 1;
+}
+
+.dock-right #editor {
+	border-left: 1px solid #333;
+	max-width: 675px;
+}
+
+.dock-top #preview,
+.dock-bottom #preview {
+	height: auto;
+}
+
+.dock-top #preview {
+	order: 1;
+}
+
+.dock-top #editor,
+.dock-bottom #editor {
+	width: 100%;
+}
+
+.CodeMirror {
+	background: none !important;
+	height: 100%;
+}
+
+.cm-s-monokai .CodeMirror-gutters {
+	background: #1a1a1a !important;
+}
+
+.cm-s-monokai div.CodeMirror-selected {
+	background: rgba(255, 255, 255, .1) !important;
+}
+
+#preview {
+	top: 0;
+	left: 0;
+	border: 0;
+	width: 100%;
+	height: 100%;
+}

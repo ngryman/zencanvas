@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Canvas Editor</title>
+	<link rel="stylesheet" href="node_modules/codemirror/lib/codemirror.css">
+	<link rel="stylesheet" href="node_modules/codemirror/theme/monokai.css">
+	<script src="node_modules/codemirror/lib/codemirror.js"></script>
+	<script src="node_modules/codemirror/mode/javascript/javascript.js"></script>
+	<link rel="stylesheet" href="app.css">
+</head>
+<body>
+	<iframe id="preview" src="preview.html" sandbox="allow-same-origin allow-scripts"></iframe>
+	<div id="editor"></div>
+
+	<script>
+		var editorEl = document.querySelector('#editor');
+		var dockSide = 'center';
+		var previewFrame = document.querySelector('#preview');
+		var previewWindow = previewFrame.contentWindow;
+		var previewTimeout;
+
+		var editor = CodeMirror(function(el) {
+			document.querySelector('#editor').appendChild(el);
+		}, {
+			theme: 'monokai',
+			lineNumbers: true,
+			lineWrapping: true,
+			tabSize: 2,
+			indentWithTabs: true,
+			value: localStorage.getItem('autosave') || '',
+			extraKeys: {
+				'Ctrl-Alt-Left': dock('left', 'right'),
+				'Ctrl-Alt-Right': dock('right', 'left'),
+				'Ctrl-Alt-Up': dock('top', 'bottom'),
+				'Ctrl-Alt-Down': dock('bottom', 'top'),
+			}
+		});
+
+		editor.on('change', function() {
+			clearTimeout(previewTimeout);
+			previewTimeout = setTimeout(preview, 300);
+		});
+
+		window.addEventListener('message', function(message) {
+			switch (message.data) {
+				case 'error':
+					notifError();
+					break;
+
+				case 'alright':
+					notifAlright();
+					break;
+			}
+		});
+
+		function preview() {
+			var value = editor.getValue();
+			previewWindow.inject(value);
+			localStorage.setItem('autosave', value);
+		}
+
+		previewWindow.addEventListener('load', preview);
+
+		function dock(side, opSide) {
+			return function(cm) {
+				document.body.classList.remove('dock-' + dockSide);
+				if (opSide == dockSide)
+					document.body.classList.remove('dock');
+				else
+					document.body.classList.add('dock', 'dock-' + side);
+				cm.refresh();
+				dockSide = side;
+			};
+		}
+
+		function notifError() {
+			editorEl.classList.add('has-error');
+		}
+
+		function notifAlright() {
+			editorEl.classList.remove('has-error');
+		}
+	</script>
+</body>
+</html>
