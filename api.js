@@ -1,9 +1,10 @@
 !function(window) {
 
 	var rafId;
-	var initialized = false;
+	var injectsCount = 0
 	var errorTimeout;
 	var hasError = false;
+	var lastDraw;
 
 	var canvas = window.canvas = document.querySelector('#scene');
 	var context = window.context = window.ctx = canvas.getContext('2d');
@@ -24,6 +25,7 @@
 
 	window.noLoop = function() {
 		cancelAnimationFrame(rafId);
+		rafId = null;
 	};
 
 	/**
@@ -31,19 +33,22 @@
 	 */
 
 	window.redraw = function() {
-		if ('function' == typeof draw) draw();
+		var now = Date.now();
+		if ('function' == typeof draw) draw(now - lastDraw);
+		lastDraw = now;
 	};
 
 	/**
 	 *
 	 */
 
-	window.resize = function() {
+	window.resize = function(noredraw) {
 		var style = getComputedStyle(canvas, null);
 		width = window.width = canvas.width = parseInt(style.width);
 		height = window.height = canvas.height = parseInt(style.height);
 
-		redraw();
+		if (!noredraw)
+			redraw();
 	};
 
 	/**
@@ -58,20 +63,24 @@
 	 * @private
 	 */
 
-	window.inject = function(code) {
-		if (!initialized) {
+	function inject(code) {
+		if (0 === injectsCount) {
 			window.addEventListener('resize', resize);
-			resize();
-
-			initialized = true;
+			resize(true);
+		}
+		else {
+			// stops eventual previous loop
+			noLoop();
+			// resets the canvas state
+			canvas.width = canvas.width;
+			// clear error notification timeout, perhaps the error is now fixed :)
+			clearTimeout(errorTimeout);
+			// clears console
+			console.clear();
 		}
 
-		// stops eventual previous loop
-		noLoop();
-		// resets the canvas state
-		canvas.width = canvas.width;
-		// clear error notification timeout, perhaps the error is now fixed :)
-		clearTimeout(errorTimeout);
+		// reset last draw
+		lastDraw = Date.now();
 
 		try {
 			// evaluates user code
@@ -84,20 +93,33 @@
 
 		// there was an error, notify that it's gone
 		if (hasError) {
-			parent.postMessage('alright', '*');
+			parent.postMessage({ type: 'success' }, '*');
 			hasError = false;
 		}
 
-		// setup & force a first draw, if user does not use loop()
+		// teardown & setup & force a first draw, if user does not use loop()
+		if (injectsCount > 0 && 'function' == typeof teardown) teardown();
 		if ('function' == typeof setup) setup();
 		redraw();
+
+		injectsCount++;
 	};
 
 	function postError() {
-		parent.postMessage('error', '*');
+		parent.postMessage({ type: 'error' }, '*');
 		hasError = true;
 	}
 
-	resize();
+	resize(true);
+
+	window.addEventListener('message', function(e) {
+		var message = e.data;
+
+		switch (message.type) {
+			case 'code':
+				inject(message.data);
+				break;
+		}
+	});
 
 }(window);
