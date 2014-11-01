@@ -68,6 +68,7 @@
 					document.body.classList.add('dock', 'dock-' + side);
 				cm.refresh();
 				dockSide = side;
+				localStorage.setItem('dock_side', dockSide);
 			};
 		}
 
@@ -92,6 +93,12 @@
 					break;
 			}
 		});
+
+		var storedDockSide = localStorage.getItem('dock_side');
+		if ('left' == storedDockSide)
+			dock('left', 'right')(editor);
+		else if ('right' == storedDockSide)
+			dock('right', 'left')(editor);
 	</script>
 </body>
 </html>
