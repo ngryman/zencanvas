@@ -1,0 +1,42 @@
+#editor {
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  bottom: 10%;
+  opacity: .2;
+  border: 1px solid #333;
+  padding: 10px;
+  width: 80%;
+  font-size: 14px;
+  transform: translateX(-50%);
+  transition: opacity 100ms,
+    background 100ms,
+    outline 200ms;
+
+  &:hover {
+    opacity: 1;
+    background: rgba(34, 34, 34, .8);
+  }
+
+  &.has-error {
+    outline: 3px solid #ff5035;
+  }
+}
+
+.CodeMirror {
+  background: none !important;
+  height: 100%;
+
+  &.cm-s-monokai .CodeMirror-gutters {
+    background: #1a1a1a !important;
+  }
+
+  &.cm-s-monokai div.CodeMirror-selected {
+    background: rgba(255, 255, 255, .1) !important;
+  }
+
+  &.cm-s-monokai .CodeMirror-matchingbracket {
+    text-decoration: none !important;
+    border-bottom: 1px solid rgba(255, 215, 60, .7);
+  }
+}

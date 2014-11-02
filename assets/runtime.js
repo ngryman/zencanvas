@@ -6,7 +6,7 @@
 	var hasError = false;
 	var lastDraw;
 
-	var canvas = window.canvas = document.querySelector('#scene');
+	var canvas = window.canvas = document.querySelector('#sketch');
 	var context = window.context = window.ctx = canvas.getContext('2d');
 	var width, height;
 

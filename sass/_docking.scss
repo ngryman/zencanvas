@@ -1,0 +1,39 @@
+.dock {
+  display: flex;
+  
+  #editor,
+  #preview {
+    position: static;
+    flex: 1;
+  }
+
+  #editor {
+    border: 0;
+    max-width: 675px;
+    height: 100%;
+    background: #111;
+    opacity: 1;
+    transform: none;
+
+    &:hover {
+      background: #111;
+    }
+  }
+}
+
+.dock-left {
+  #editor {
+    border-right: 1px solid #333;
+  }
+
+  #preview {
+    order: 1;
+  }
+}
+
+.dock-right {
+  #editor {
+    border-left: 1px solid #333;
+    max-width: 675px;
+  }
+}
