@@ -6,7 +6,8 @@
   opacity: .2;
   border: 1px solid #333;
   padding: 10px;
-  width: 80%;
+  width: 100%;
+  max-width: 675px;
   font-size: 14px;
   transform: translateX(-50%);
   transition: opacity 100ms,
@@ -21,6 +22,30 @@
   &.has-error {
     outline: 3px solid #ff5035;
   }
+}
+
+.actions {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 3;
+}
+
+.action {
+  display: none;
+  outline: 0;
+  border: none;
+  border-radius: 50%;
+  background: #333;
+  cursor: pointer;
+}
+
+.action-content {
+  display: none;
+}
+
+.action-help {
+  @extend .action;
 }
 
 .CodeMirror {

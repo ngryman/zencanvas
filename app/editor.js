@@ -22,9 +22,15 @@ require('../node_modules/codemirror/addon/edit/matchbrackets.js');
 
 var editor
   , editorEl = document.getElementById('editor')
-  , dockSide = 'center'
+  , dockPos = localStorage.getItem('dock_pos') || 0
   , debounceTimeout
   , hasError = false;
+
+var dockClasses = {
+  '-1': 'dock-left',
+   '0': '',
+   '1': 'dock-right'
+};
 
 /**
  * Editor.
@@ -45,8 +51,8 @@ Editor.initialize = function() {
     matchBrackets: true,
     value: localStorage.getItem('editor_autosave') || '',
     extraKeys: {
-      'Ctrl-Alt-Left': dock('left', 'right'),
-      'Ctrl-Alt-Right': dock('right', 'left')
+      'Ctrl-Alt-Left': dock.bind(null, -1),
+      'Ctrl-Alt-Right': dock.bind(null, +1)
     }
   });
 
@@ -60,11 +66,10 @@ Editor.initialize = function() {
     }, 300);
   });
 
-  var storedDockSide = localStorage.getItem('dock_side');
-  if ('left' == storedDockSide)
-  	dock('left', 'right')(editor);
-  else if ('right' == storedDockSide)
-  	dock('right', 'left')(editor);
+  // if (-1 == dockPos)
+  // 	dock('left', 'right')(editor);
+  // else if ('right' == dockSide)
+  // 	dock('right', 'left')(editor);
 };
 
 Object.defineProperty(Editor, 'code', {
@@ -86,18 +91,43 @@ Object.defineProperty(Editor, 'hasError', {
   }
 });
 
-function dock(side, opSide) {
-	return function(cm) {
-		document.body.classList.remove('dock-' + dockSide);
-		if (opSide == dockSide)
-			document.body.classList.remove('dock');
-		else
-			document.body.classList.add('dock', 'dock-' + side);
-		cm.refresh();
-		dockSide = side;
-		localStorage.setItem('dock_side', dockSide);
-	};
+function dock(dir) {
+  var className;
+
+  if ((dockPos + dir < -1) || (dockPos + dir > +1)) return;
+
+  className = dockClasses[dockPos];
+  if (className) {
+    document.body.classList.remove(dockClasses[dockPos]);
+    document.body.classList.remove('dock');
+  }
+
+  dockPos += dir;
+
+  className = dockClasses[dockPos]
+  if (className) {
+    document.body.classList.add(dockClasses[dockPos]);
+    document.body.classList.add('dock');
+  }
 }
+
+// function dock(side, opSide) {
+// 	return function(cm) {
+// 		document.body.classList.remove('dock-' + dockSide);
+//
+// 		if (opSide == dockSide) {
+// 			document.body.classList.remove('dock');
+//       dockSide = side;
+//     }
+// 		else {
+// 			document.body.classList.add('dock', 'dock-' + side);
+//       dockSide = 'center';
+//     }
+//
+// 		cm.refresh();
+// 		localStorage.setItem('dock_side', dockSide);
+// 	};
+// }
 
 /**
  * Exports.
