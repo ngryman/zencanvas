@@ -42,19 +42,6 @@
 	 *
 	 */
 
-	window.resize = function(noredraw) {
-		var style = getComputedStyle(canvas, null);
-		width = window.width = canvas.width = parseInt(style.width);
-		height = window.height = canvas.height = parseInt(style.height);
-
-		if (!noredraw)
-			redraw();
-	};
-
-	/**
-	 *
-	 */
-
 	window.background = function(color) {
 		canvas.style.backgroundColor = color;
 	};
@@ -65,8 +52,8 @@
 
 	function inject(code) {
 		if (0 === injectsCount) {
-			window.addEventListener('resize', resize);
-			resize(true);
+			window.addEventListener('resize', onResize);
+			onResize(true);
 		}
 		else {
 			// stops eventual previous loop
@@ -103,14 +90,23 @@
 		redraw();
 
 		injectsCount++;
+	}
+
+	function onResize(noredraw) {
+		var style = getComputedStyle(canvas, null);
+		width = window.width = canvas.width = parseInt(style.width);
+		height = window.height = canvas.height = parseInt(style.height);
+
+		if ('function' == typeof resize) resize();
+
+		if (!noredraw)
+			redraw();
 	};
 
 	function postError() {
 		parent.postMessage({ type: 'error' }, '*');
 		hasError = true;
 	}
-
-	resize(true);
 
 	window.addEventListener('message', function(e) {
 		var message = e.data;
@@ -121,5 +117,7 @@
 				break;
 		}
 	});
+
+	onResize(true);
 
 }(window);

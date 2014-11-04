@@ -4,23 +4,22 @@
   left: 50%;
   bottom: 10%;
   opacity: .2;
-  border: 1px solid #333;
-  padding: 10px;
+  border: 1px solid #171717;
   width: 100%;
-  max-width: 675px;
+  max-width: $editor-width;
   font-size: 14px;
   transform: translateX(-50%);
   transition: opacity 100ms,
     background 100ms,
-    outline 200ms;
+    box-shadow 200ms;
 
   &:hover {
     opacity: 1;
-    background: rgba(34, 34, 34, .8);
+    background: rgba($background-color, .8);
   }
 
   &.has-error {
-    outline: 3px solid #ff5035;
+    box-shadow: -1px 0 0 #ff5035;
   }
 }
 
@@ -53,15 +52,33 @@
   height: 100%;
 
   &.cm-s-monokai .CodeMirror-gutters {
-    background: #1a1a1a !important;
+    background: #171717 !important;
   }
 
   &.cm-s-monokai div.CodeMirror-selected {
-    background: rgba(255, 255, 255, .1) !important;
+    background: #333 !important;
   }
 
   &.cm-s-monokai .CodeMirror-matchingbracket {
     text-decoration: none !important;
     border-bottom: 1px solid rgba(255, 215, 60, .7);
+  }
+
+  &.cm-s-monokai span.cm-variable,
+  &.cm-s-monokai span.cm-property,
+  &.cm-s-monokai span.cm-attribute {
+    color: $color-green;
+  }
+
+  &.cm-s-monokai span.cm-keyword {
+    color: #FF6B6B;
+  }
+
+  &.cm-s-monokai span.cm-variable-2 {
+    color: #4ECDC4;
+  }
+
+  &.cm-s-monokai .CodeMirror-linenumber {
+    color: #333;
   }
 }

@@ -11,21 +11,25 @@
 
   #editor {
     border: 0;
-    max-width: 675px;
+    max-width: $editor-width;
     height: 100%;
-    background: #111;
+    background: rgba($background-color, .8);
     opacity: 1;
     transform: none;
 
     &:hover {
-      background: #111;
+      background: rgba($background-color, .8);
     }
   }
 }
 
 .dock-left {
   #editor {
-    border-right: 1px solid #333;
+    border-right: 1px solid #171717;
+
+    &.has-error {
+      box-shadow: 1px 0 0 #ff5035;
+    }
   }
 
   #preview {
@@ -35,7 +39,7 @@
 
 .dock-right {
   #editor {
-    border-left: 1px solid #333;
-    max-width: 675px;
+    border-left: 1px solid #171717;
+    max-width: $editor-width;
   }
 }

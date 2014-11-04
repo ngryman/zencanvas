@@ -43,7 +43,7 @@ Editor.initialize = function() {
     editorEl.appendChild(el);
   }, {
     theme: 'monokai',
-    lineNumbers: true,
+    // lineNumbers: true,
     lineWrapping: true,
     tabSize: 2,
     indentWithTabs: true,
